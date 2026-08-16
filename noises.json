@@ -1,0 +1,146 @@
+[
+ {
+  "code": "tcar",
+  "name": "TCAR",
+  "ja": "走行中の車内",
+  "category": "T 交通",
+  "band_ratio": 0.0002886243481648832,
+  "audio": "audio/noise/tcar.mp3"
+ },
+ {
+  "code": "dwashing",
+  "name": "DWASHING",
+  "ja": "洗濯機のある部屋",
+  "category": "D 家庭",
+  "band_ratio": 0.0011010031059476514,
+  "audio": "audio/noise/dwashing.mp3"
+ },
+ {
+  "code": "ooffice",
+  "name": "OOFFICE",
+  "ja": "オフィス",
+  "category": "O 事務",
+  "band_ratio": 0.002062568789605136,
+  "audio": "audio/noise/ooffice.mp3"
+ },
+ {
+  "code": "tbus",
+  "name": "TBUS",
+  "ja": "バス車内",
+  "category": "T 交通",
+  "band_ratio": 0.002507748550816265,
+  "audio": "audio/noise/tbus.mp3"
+ },
+ {
+  "code": "nfield",
+  "name": "NFIELD",
+  "ja": "野原",
+  "category": "N 自然",
+  "band_ratio": 0.0034243983502343905,
+  "audio": "audio/noise/nfield.mp3"
+ },
+ {
+  "code": "ohallway",
+  "name": "OHALLWAY",
+  "ja": "廊下",
+  "category": "O 事務",
+  "band_ratio": 0.013148964480097015,
+  "audio": "audio/noise/ohallway.mp3"
+ },
+ {
+  "code": "spsquare",
+  "name": "SPSQUARE",
+  "ja": "広場",
+  "category": "S 街路",
+  "band_ratio": 0.041699624852175564,
+  "audio": "audio/noise/spsquare.mp3"
+ },
+ {
+  "code": "nriver",
+  "name": "NRIVER",
+  "ja": "川辺",
+  "category": "N 自然",
+  "band_ratio": 0.04328926555020317,
+  "audio": "audio/noise/nriver.mp3"
+ },
+ {
+  "code": "dkitchen",
+  "name": "DKITCHEN",
+  "ja": "台所",
+  "category": "D 家庭",
+  "band_ratio": 0.043907550428699114,
+  "audio": "audio/noise/dkitchen.mp3"
+ },
+ {
+  "code": "straffic",
+  "name": "STRAFFIC",
+  "ja": "交通量の多い道路",
+  "category": "S 街路",
+  "band_ratio": 0.05769181495517748,
+  "audio": "audio/noise/straffic.mp3"
+ },
+ {
+  "code": "npark",
+  "name": "NPARK",
+  "ja": "公園",
+  "category": "N 自然",
+  "band_ratio": 0.08383246531063013,
+  "audio": "audio/noise/npark.mp3"
+ },
+ {
+  "code": "tmetro",
+  "name": "TMETRO",
+  "ja": "地下鉄車内",
+  "category": "T 交通",
+  "band_ratio": 0.091688506833591,
+  "audio": "audio/noise/tmetro.mp3"
+ },
+ {
+  "code": "dliving",
+  "name": "DLIVING",
+  "ja": "居間",
+  "category": "D 家庭",
+  "band_ratio": 0.1308541950833941,
+  "audio": "audio/noise/dliving.mp3"
+ },
+ {
+  "code": "scafe",
+  "name": "SCAFE",
+  "ja": "屋外カフェ",
+  "category": "S 街路",
+  "band_ratio": 0.13124356677531307,
+  "audio": "audio/noise/scafe.mp3"
+ },
+ {
+  "code": "pstation",
+  "name": "PSTATION",
+  "ja": "駅構内",
+  "category": "P 公共",
+  "band_ratio": 0.2158757236709644,
+  "audio": "audio/noise/pstation.mp3"
+ },
+ {
+  "code": "pcafeter",
+  "name": "PCAFETER",
+  "ja": "カフェテリア",
+  "category": "P 公共",
+  "band_ratio": 0.3609776845557678,
+  "audio": "audio/noise/pcafeter.mp3"
+ },
+ {
+  "code": "omeeting",
+  "name": "OMEETING",
+  "ja": "会議室",
+  "category": "O 事務",
+  "band_ratio": 0.4567893745604019,
+  "audio": "audio/noise/omeeting.mp3"
+ },
+ {
+  "code": "presto",
+  "name": "PRESTO",
+  "ja": "レストラン",
+  "category": "P 公共",
+  "band_ratio": 0.6627413725182482,
+  "audio": "audio/noise/presto.mp3"
+ }
+]

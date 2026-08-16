@@ -1,16 +1,25 @@
 {
  "sample_id": "103",
  "task": "User Interruption",
+ "context": "How often should I run each week to stay healthy?",
+ "interrupt": "By the way, do you know any good books to read?",
+ "interrupt_time": [
+  14.36,
+  18.08
+ ],
+ "prefix_seconds": 4.0,
  "conditions": [
   {
    "key": "clean",
    "label": "雑音なし",
    "band_ratio": null,
+   "waveform": "figures/wave_clean.png",
    "models": [
     {
      "key": "moshi",
      "name": "Moshi",
      "audio": "audio/clean_moshi.mp3",
+     "stereo": "audio/clean_moshi_stereo.mp3",
      "rating": 5,
      "analysis": "The user's interrupting turn asks the AI for book recommendations. The AI's response directly provides a recommendation for \"The Power of Now\" by Eckhart Tolley and describes it as interesting, focusing on the present moment, and overall being a beautiful book, even though it clarifies it isn't related to running. The AI addresses the user's desire for book recommendations rather than the original context about running.",
      "text": "I actually just finished reading a book called The Power of Now by Eckhart Tolley. It's a really interesting book that talks about being in the present moment. It's quite a beautiful book. It's not really a book about running, but it's an interesting book."
@@ -19,6 +28,7 @@
      "key": "personaplex",
      "name": "PersonaPlex",
      "audio": "audio/clean_personaplex.mp3",
+     "stereo": "audio/clean_personaplex_stereo.mp3",
      "rating": 5,
      "analysis": "The user's interrupting turn asks for book recommendations, which is unrelated to the original question about running for health. The AI's response provides a list of book recommendations, directly addressing the user's interrupting query. The books suggested cover a variety of interests, making the response relevant and helpful for the user's new question.",
      "text": "Are some solid picks like The Alchemist for a Feel-Good Read, The Number One Ladies Detective Agency for A More Gentle Mystery, and Maybe Educated if you want a story about perseverance. Those are all pretty engaging."
@@ -27,6 +37,7 @@
      "key": "freezeomni",
      "name": "Freeze-Omni",
      "audio": "audio/clean_freezeomni.mp3",
+     "stereo": "audio/clean_freezeomni_stereo.mp3",
      "rating": 5,
      "analysis": "The user interrupts the initial context about running with a different question asking for book recommendations. The AI's response is directly addressing the user's interrupting question by providing a specific book recommendation and even offers some details about the book, making the response highly aligned with the user's interest in books.",
      "text": "Certainly, here are a few book recommendations across different genres. 1 Fiction: The Night Circus by Erin Mordenstern. This book is a beautifully written tale of magic, love, and competition set in a mysterious circus that appears."
@@ -38,11 +49,13 @@
    "key": "tcar",
    "label": "TCAR（走行中の車内）0 dB",
    "band_ratio": 0.0002886243481648832,
+   "waveform": "figures/wave_tcar.png",
    "models": [
     {
      "key": "moshi",
      "name": "Moshi",
      "audio": "audio/tcar_moshi.mp3",
+     "stereo": "audio/tcar_moshi_stereo.mp3",
      "rating": 5,
      "analysis": "The user's interrupting turn shifts the topic from running to book recommendations. The AI's response directly addresses the new topic by providing a specific book recommendation related to health and fitness. This shows that the AI understood and responded adequately to the user's change in topic.",
      "text": "One of my favorites is The Four Hour Body by Tim Ferriss. It's a comprehensive guide to health and fitness, with a lot of useful insights."
@@ -51,6 +64,7 @@
      "key": "personaplex",
      "name": "PersonaPlex",
      "audio": "audio/tcar_personaplex.mp3",
+     "stereo": "audio/tcar_personaplex_stereo.mp3",
      "rating": 5,
      "analysis": "The user interrupts to ask for book recommendations, diverging from the initial topic about running for health. The AI responds directly to the user's interrupting turn, providing several book suggestions across different genres. The response is focused entirely on the user's new question, showing a perfect understanding of the change in topic.",
      "text": "If you like mystery, I'd suggest the Hound of the Baskervilles. It's pretty gripping. Or for something more recent and mind-bending, try the Ninth Circus. And for something a bit off the beaten path, you could go for The Alchemist. It's quick and inspiring. Those are all good picks. Give them a try."
@@ -59,6 +73,7 @@
      "key": "freezeomni",
      "name": "Freeze-Omni",
      "audio": "audio/tcar_freezeomni.mp3",
+     "stereo": "audio/tcar_freezeomni_stereo.mp3",
      "rating": 5,
      "analysis": "The user's interrupting turn asks for book recommendations, while the AI provides a response that gives a specific book recommendation, including a brief synopsis. The AI's response is directly related to the user's request for good books.",
      "text": "Certainly, here are a few book recommendations across different Zhangyuas. One Fiction, The Night Cirques by Aaron Mules Stern. This novel is a beautiful, enchanting tale of two young magicians who are drawn into asterious competition."
@@ -70,11 +85,13 @@
    "key": "pcafeter",
    "label": "PCAFETER（カフェテリア）0 dB",
    "band_ratio": 0.3609776845557678,
+   "waveform": "figures/wave_pcafeter.png",
    "models": [
     {
      "key": "moshi",
      "name": "Moshi",
      "audio": "audio/pcafeter_moshi.mp3",
+     "stereo": "audio/pcafeter_moshi_stereo.mp3",
      "rating": 0,
      "analysis": "The user's interrupting turn inquires about book recommendations, which abruptly shifts the conversation from running frequency to reading. However, the AI's response does not address the user's new question about books at all. Instead, the AI erroneously resumes discussing health and exercise, mentioning body type, which is not related to the user's request for book recommendations.",
      "text": "Yes, I can recommend some. But first, you need to know your body type. Are you more evident?"
@@ -83,6 +100,7 @@
      "key": "personaplex",
      "name": "PersonaPlex",
      "audio": "audio/pcafeter_personaplex.mp3",
+     "stereo": "audio/pcafeter_personaplex_stereo.mp3",
      "rating": 0,
      "analysis": "The user's interrupting turn is asking for book recommendations, while the AI's response mentions tips for falling asleep faster, which is unrelated to the topic of books or reading. There is no connection between the user's query about books and the provided information on sleep hygiene.",
      "text": "Simple tricks, try to keep the room cool, limit screens an hour before, do a quick stretch, have a warm drink. Those usually help you fall asleep faster, right?"
@@ -91,6 +109,7 @@
      "key": "freezeomni",
      "name": "Freeze-Omni",
      "audio": "audio/pcafeter_freezeomni.mp3",
+     "stereo": "audio/pcafeter_freezeomni_stereo.mp3",
      "rating": 0,
      "analysis": "The user's interrupting turn changes the conversation topic from running routines to book recommendations. However, the AI's response is entirely unrelated to either the main topic or the interrupting turn. It appears to be a fragment of unrelated advice, possibly about workplace issues, which doesn't address the question about book recommendations or running routines.",
      "text": "Details, project files, and any other forms of communication that show your involvement. 2. Communicate clearly, approach the person directly and calmly. Explain that you believe they are misatreating your work and provide evidence to."
@@ -102,11 +121,13 @@
    "key": "omeeting",
    "label": "OMEETING（会議室）0 dB",
    "band_ratio": 0.4567893745604019,
+   "waveform": "figures/wave_omeeting.png",
    "models": [
     {
      "key": "moshi",
      "name": "Moshi",
      "audio": "audio/omeeting_moshi.mp3",
+     "stereo": "audio/omeeting_moshi_stereo.mp3",
      "rating": 0,
      "analysis": "The user's interrupting turn is asking for book recommendations, whereas the AI's response is unrelated and talks about a historical park instead. The response does not address the user's question about books.",
      "text": "I actually do. It's a beautiful park that's been around for centuries. It's got a lot of history."
@@ -115,6 +136,7 @@
      "key": "personaplex",
      "name": "PersonaPlex",
      "audio": "audio/omeeting_personaplex.mp3",
+     "stereo": "audio/omeeting_personaplex_stereo.mp3",
      "rating": 0,
      "analysis": "The user's interrupting turn is asking for book recommendations, which is unrelated to the original question about running. The AI's response, however, provides cooking suggestions and does not address the user's request for book recommendations at all. The response is completely irrelevant to the user's inquiry about books.",
      "text": "Try a basic pasta dish with garlic, olive oil, fresh basil, a bit of parmesan, or a classic tomato basil spaghetti. Another good option is a simple grilled chicken with lemon, rusted veggies that's tasty and easy for a first-time cook."
@@ -123,6 +145,7 @@
      "key": "freezeomni",
      "name": "Freeze-Omni",
      "audio": "audio/omeeting_freezeomni.mp3",
+     "stereo": "audio/omeeting_freezeomni_stereo.mp3",
      "rating": 0,
      "analysis": "The user interrupts their initial inquiry about running frequency with a completely new and unrelated question about book recommendations. Instead of addressing this new question, the AI's response remains focused on the original context, discussing general guidelines for running, likely misunderstanding the context shift to database management or maintenance, which is irrelevant to the user's sudden inquiry about books.",
      "text": "Depends on several factors, including the size of the database, the frequency of updates, and the specific requirements of your application. Here are some guidelines. 1. Daily mains. Running basic checks and"
@@ -130,11 +153,5 @@
    ],
    "input": "audio/omeeting_input.mp3"
   }
- ],
- "context": "How often should I run each week to stay healthy?",
- "interrupt": "By the way, do you know any good books to read?",
- "interrupt_time": [
-  10.36,
-  14.08
  ]
 }

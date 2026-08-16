@@ -78,6 +78,12 @@ figcaption { font-size: 13.5px; color: var(--muted); margin-top: 8px; }
 .track { margin: 0 0 18px; }
 .track:last-child { margin-bottom: 0; }
 .track .label { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+.track .sublabel { font-size: 12.5px; color: var(--muted); margin: 10px 0 4px; }
+.wave { margin: 0 0 16px; }
+.wave img {
+  width: 100%; height: auto; display: block; background: #fff;
+  border: 1px solid var(--line); border-radius: 8px;
+}
 .track .name { font-weight: 700; font-size: 15px; }
 audio { width: 100%; margin: 2px 0 0; height: 38px; }
 .model { border-top: 1px dashed var(--line); padding-top: 14px; margin-top: 14px; }
@@ -96,6 +102,20 @@ audio { width: 100%; margin: 2px 0 0; height: 38px; }
   font-size: 13.5px; color: var(--muted); background: var(--card);
   border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0;
 }
+.noise {
+  border: 1px solid var(--line); border-radius: 10px; background: var(--card);
+  padding: 12px 15px; margin: 0 0 10px;
+}
+.noise .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 9px; }
+.noise .en { font-weight: 700; font-size: 15px; letter-spacing: .01em; }
+.noise .ja { font-size: 14px; }
+.noise .cat { font-size: 12px; color: var(--muted); }
+.noise .val {
+  margin-left: auto; font-size: 12.5px; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.bar { height: 5px; border-radius: 3px; background: var(--line); margin: 8px 0 6px; }
+.bar > span { display: block; height: 100%; border-radius: 3px; background: var(--accent); }
 ol.refs { font-size: 13.5px; color: var(--muted); padding-left: 1.4em; }
 ol.refs li { margin-bottom: 3px; }
 footer {
@@ -131,18 +151,32 @@ Full-Duplex 音声対話システムが雑音環境でどのように応答を�
   <dl>
     <dt>最初の発話</dt><dd class="quote">「How often should I run each week to stay healthy?」</dd>
     <dt>割り込み発話</dt><dd class="quote">「By the way, do you know any good books to read?」
-      <span class="ratio">（10.36〜14.08 秒）</span></dd>
+      <span class="ratio">（14.36〜18.08 秒）</span></dd>
     <dt>正解</dt><dd>割り込み後の話題（おすすめの本）について答えること</dd>
   </dl>
 </div>
 
-<p>同じ対話に対して、雑音の種類だけを変えた 4 条件を並べています。雑音を加える強さ
+<h3>本研究の工夫: 先頭への 4 秒の無音挿入</h3>
+<p>Full-Duplex モデルは音声ストリームが始まった直後から発話できてしまうため、
+会話が始まる前の不安定な挙動がそのまま評価に混ざってしまいます。そこで本研究では、
+<strong>入力音声の先頭に 4 秒の無音を挿入</strong>し、<strong>雑音はその 4 秒にも重畳</strong>
+しました。これにより</p>
+<ul>
+  <li>モデルは会話が始まる前に、<strong>4 秒間その雑音環境だけを聞く</strong>ことができる</li>
+  <li>ストリーム開始直後の発話は <strong>評価対象から除外</strong>される
+    （評価に使うのは 4 秒以降のみで、ベンチマークの時間軸は元のまま保たれる）</li>
+</ul>
+<p>下の波形図で灰色に塗った区間がその 4 秒です。実際、モデルによってはこの区間で
+勝手に喋り始めているのが見て取れます。赤い縦線は割り込み発話の区間です。</p>
+
+<p>以下は同じ対話に対して、雑音の種類だけを変えた 4 条件です。雑音を加える強さ
 （SNR 0 dB）はすべて同じで、変えているのは<strong>雑音の種類だけ</strong>です。
 上から順に、雑音が人間の音声に近い帯域を持つようになります。</p>
 
 <section class="cond">
   <header><h3>雑音なし</h3></header>
   <div class="body">
+    <div class="wave"><a href="figures/wave_clean.png"><img src="figures/wave_clean.png" alt="雑音なしの波形"></a></div>
     <div class="track">
       <p class="label">モデルへの入力音声（この音を聞かせました）</p>
       <audio controls preload="none" src="audio/clean_input.mp3"></audio>
@@ -150,16 +184,22 @@ Full-Duplex 音声対話システムが雑音環境でどのように応答を�
     <div class="track model">
       <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi の応答</span><span class="score good">GPT-4o 5 点</span></p>
       <audio controls preload="none" src="audio/clean_moshi.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/clean_moshi_stereo.mp3"></audio>
       <p class="transcript">I actually just finished reading a book called The Power of Now by Eckhart Tolley. It's a really interesting book that talks about being in the present moment. It's quite a beautiful book. It's not really a book about running, but it's an interesting book.</p>
     </div>
     <div class="track model">
       <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex の応答</span><span class="score good">GPT-4o 5 点</span></p>
       <audio controls preload="none" src="audio/clean_personaplex.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/clean_personaplex_stereo.mp3"></audio>
       <p class="transcript">Are some solid picks like The Alchemist for a Feel-Good Read, The Number One Ladies Detective Agency for A More Gentle Mystery, and Maybe Educated if you want a story about perseverance. Those are all pretty engaging.</p>
     </div>
     <div class="track model">
       <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni の応答</span><span class="score good">GPT-4o 5 点</span></p>
       <audio controls preload="none" src="audio/clean_freezeomni.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/clean_freezeomni_stereo.mp3"></audio>
       <p class="transcript">Certainly, here are a few book recommendations across different genres. 1 Fiction: The Night Circus by Erin Mordenstern. This book is a beautifully written tale of magic, love, and competition set in a mysterious circus that appears.</p>
     </div>
   </div>
@@ -167,6 +207,7 @@ Full-Duplex 音声対話システムが雑音環境でどのように応答を�
 <section class="cond">
   <header><h3>TCAR（走行中の車内）0 dB</h3><span class="ratio">音声帯域パワー占有率 0.000</span></header>
   <div class="body">
+    <div class="wave"><a href="figures/wave_tcar.png"><img src="figures/wave_tcar.png" alt="TCAR（走行中の車内）0 dBの波形"></a></div>
     <div class="track">
       <p class="label">モデルへの入力音声（この音を聞かせました）</p>
       <audio controls preload="none" src="audio/tcar_input.mp3"></audio>
@@ -174,16 +215,22 @@ Full-Duplex 音声対話システムが雑音環境でどのように応答を�
     <div class="track model">
       <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi の応答</span><span class="score good">GPT-4o 5 点</span></p>
       <audio controls preload="none" src="audio/tcar_moshi.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/tcar_moshi_stereo.mp3"></audio>
       <p class="transcript">One of my favorites is The Four Hour Body by Tim Ferriss. It's a comprehensive guide to health and fitness, with a lot of useful insights.</p>
     </div>
     <div class="track model">
       <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex の応答</span><span class="score good">GPT-4o 5 点</span></p>
       <audio controls preload="none" src="audio/tcar_personaplex.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/tcar_personaplex_stereo.mp3"></audio>
       <p class="transcript">If you like mystery, I'd suggest the Hound of the Baskervilles. It's pretty gripping. Or for something more recent and mind-bending, try the Ninth Circus. And for something a bit off the beaten path, you could go for The Alchemist. It's quick and inspiring. Those are all good picks. Give them a try.</p>
     </div>
     <div class="track model">
       <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni の応答</span><span class="score good">GPT-4o 5 点</span></p>
       <audio controls preload="none" src="audio/tcar_freezeomni.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/tcar_freezeomni_stereo.mp3"></audio>
       <p class="transcript">Certainly, here are a few book recommendations across different Zhangyuas. One Fiction, The Night Cirques by Aaron Mules Stern. This novel is a beautiful, enchanting tale of two young magicians who are drawn into asterious competition.</p>
     </div>
   </div>
@@ -191,6 +238,7 @@ Full-Duplex 音声対話システムが雑音環境でどのように応答を�
 <section class="cond">
   <header><h3>PCAFETER（カフェテリア）0 dB</h3><span class="ratio">音声帯域パワー占有率 0.361</span></header>
   <div class="body">
+    <div class="wave"><a href="figures/wave_pcafeter.png"><img src="figures/wave_pcafeter.png" alt="PCAFETER（カフェテリア）0 dBの波形"></a></div>
     <div class="track">
       <p class="label">モデルへの入力音声（この音を聞かせました）</p>
       <audio controls preload="none" src="audio/pcafeter_input.mp3"></audio>
@@ -198,16 +246,22 @@ Full-Duplex 音声対話システムが雑音環境でどのように応答を�
     <div class="track model">
       <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi の応答</span><span class="score bad">GPT-4o 0 点</span></p>
       <audio controls preload="none" src="audio/pcafeter_moshi.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/pcafeter_moshi_stereo.mp3"></audio>
       <p class="transcript">Yes, I can recommend some. But first, you need to know your body type. Are you more evident?</p>
     </div>
     <div class="track model">
       <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex の応答</span><span class="score bad">GPT-4o 0 点</span></p>
       <audio controls preload="none" src="audio/pcafeter_personaplex.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/pcafeter_personaplex_stereo.mp3"></audio>
       <p class="transcript">Simple tricks, try to keep the room cool, limit screens an hour before, do a quick stretch, have a warm drink. Those usually help you fall asleep faster, right?</p>
     </div>
     <div class="track model">
       <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni の応答</span><span class="score bad">GPT-4o 0 点</span></p>
       <audio controls preload="none" src="audio/pcafeter_freezeomni.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/pcafeter_freezeomni_stereo.mp3"></audio>
       <p class="transcript">Details, project files, and any other forms of communication that show your involvement. 2. Communicate clearly, approach the person directly and calmly. Explain that you believe they are misatreating your work and provide evidence to.</p>
     </div>
   </div>
@@ -215,6 +269,7 @@ Full-Duplex 音声対話システムが雑音環境でどのように応答を�
 <section class="cond">
   <header><h3>OMEETING（会議室）0 dB</h3><span class="ratio">音声帯域パワー占有率 0.457</span></header>
   <div class="body">
+    <div class="wave"><a href="figures/wave_omeeting.png"><img src="figures/wave_omeeting.png" alt="OMEETING（会議室）0 dBの波形"></a></div>
     <div class="track">
       <p class="label">モデルへの入力音声（この音を聞かせました）</p>
       <audio controls preload="none" src="audio/omeeting_input.mp3"></audio>
@@ -222,16 +277,22 @@ Full-Duplex 音声対話システムが雑音環境でどのように応答を�
     <div class="track model">
       <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi の応答</span><span class="score bad">GPT-4o 0 点</span></p>
       <audio controls preload="none" src="audio/omeeting_moshi.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/omeeting_moshi_stereo.mp3"></audio>
       <p class="transcript">I actually do. It's a beautiful park that's been around for centuries. It's got a lot of history.</p>
     </div>
     <div class="track model">
       <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex の応答</span><span class="score bad">GPT-4o 0 点</span></p>
       <audio controls preload="none" src="audio/omeeting_personaplex.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/omeeting_personaplex_stereo.mp3"></audio>
       <p class="transcript">Try a basic pasta dish with garlic, olive oil, fresh basil, a bit of parmesan, or a classic tomato basil spaghetti. Another good option is a simple grilled chicken with lemon, rusted veggies that's tasty and easy for a first-time cook.</p>
     </div>
     <div class="track model">
       <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni の応答</span><span class="score bad">GPT-4o 0 点</span></p>
       <audio controls preload="none" src="audio/omeeting_freezeomni.mp3"></audio>
+      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
+      <audio controls preload="none" src="audio/omeeting_freezeomni_stereo.mp3"></audio>
       <p class="transcript">Depends on several factors, including the size of the database, the frequency of updates, and the specific requirements of your application. Here are some guidelines. 1. Daily mains. Running basic checks and</p>
     </div>
   </div>
@@ -241,6 +302,161 @@ Full-Duplex 音声対話システムが雑音環境でどのように応答を�
 カフェテリア (PCAFETER) や会議室 (OMEETING) の雑音では、まったく無関係な話題を
 話し始めてしまいます。同じ音量の雑音でも、<strong>人間の音声に近い帯域にパワーを持つ雑音ほど
 対話が壊れる</strong>という図3 の主張が、そのまま聞き取れる例です。</p>
+
+<h2>18 種類の雑音を聴く</h2>
+<p>実験に使った DEMAND<sup>[5]</sup> の 18 種類の雑音を、10 秒ずつそのまま聴けます。
+図3 の横軸である<strong>音声帯域パワー占有率（雑音の全パワーに占める 300〜3400 Hz の割合）</strong>
+が小さい順に並べているので、下にいくほど「人の話し声に近い雑音」になります。
+聴き比べやすいように RMS を揃え、モデルへの入力と同じ 24 kHz で書き出しています。</p>
+
+<div class="noise">
+  <div class="head">
+    <span class="en">TCAR</span><span class="ja">走行中の車内</span><span class="cat">T 交通</span>
+    <span class="val">0.000</span>
+  </div>
+  <div class="bar"><span style="width:2.1%"></span></div>
+  <audio controls preload="none" src="audio/noise/tcar.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">DWASHING</span><span class="ja">洗濯機のある部屋</span><span class="cat">D 家庭</span>
+    <span class="val">0.001</span>
+  </div>
+  <div class="bar"><span style="width:4.1%"></span></div>
+  <audio controls preload="none" src="audio/noise/dwashing.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">OOFFICE</span><span class="ja">オフィス</span><span class="cat">O 事務</span>
+    <span class="val">0.002</span>
+  </div>
+  <div class="bar"><span style="width:5.6%"></span></div>
+  <audio controls preload="none" src="audio/noise/ooffice.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">TBUS</span><span class="ja">バス車内</span><span class="cat">T 交通</span>
+    <span class="val">0.003</span>
+  </div>
+  <div class="bar"><span style="width:6.2%"></span></div>
+  <audio controls preload="none" src="audio/noise/tbus.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">NFIELD</span><span class="ja">野原</span><span class="cat">N 自然</span>
+    <span class="val">0.003</span>
+  </div>
+  <div class="bar"><span style="width:7.2%"></span></div>
+  <audio controls preload="none" src="audio/noise/nfield.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">OHALLWAY</span><span class="ja">廊下</span><span class="cat">O 事務</span>
+    <span class="val">0.013</span>
+  </div>
+  <div class="bar"><span style="width:14.1%"></span></div>
+  <audio controls preload="none" src="audio/noise/ohallway.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">SPSQUARE</span><span class="ja">広場</span><span class="cat">S 街路</span>
+    <span class="val">0.042</span>
+  </div>
+  <div class="bar"><span style="width:25.1%"></span></div>
+  <audio controls preload="none" src="audio/noise/spsquare.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">NRIVER</span><span class="ja">川辺</span><span class="cat">N 自然</span>
+    <span class="val">0.043</span>
+  </div>
+  <div class="bar"><span style="width:25.6%"></span></div>
+  <audio controls preload="none" src="audio/noise/nriver.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">DKITCHEN</span><span class="ja">台所</span><span class="cat">D 家庭</span>
+    <span class="val">0.044</span>
+  </div>
+  <div class="bar"><span style="width:25.7%"></span></div>
+  <audio controls preload="none" src="audio/noise/dkitchen.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">STRAFFIC</span><span class="ja">交通量の多い道路</span><span class="cat">S 街路</span>
+    <span class="val">0.058</span>
+  </div>
+  <div class="bar"><span style="width:29.5%"></span></div>
+  <audio controls preload="none" src="audio/noise/straffic.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">NPARK</span><span class="ja">公園</span><span class="cat">N 自然</span>
+    <span class="val">0.084</span>
+  </div>
+  <div class="bar"><span style="width:35.6%"></span></div>
+  <audio controls preload="none" src="audio/noise/npark.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">TMETRO</span><span class="ja">地下鉄車内</span><span class="cat">T 交通</span>
+    <span class="val">0.092</span>
+  </div>
+  <div class="bar"><span style="width:37.2%"></span></div>
+  <audio controls preload="none" src="audio/noise/tmetro.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">DLIVING</span><span class="ja">居間</span><span class="cat">D 家庭</span>
+    <span class="val">0.131</span>
+  </div>
+  <div class="bar"><span style="width:44.4%"></span></div>
+  <audio controls preload="none" src="audio/noise/dliving.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">SCAFE</span><span class="ja">屋外カフェ</span><span class="cat">S 街路</span>
+    <span class="val">0.131</span>
+  </div>
+  <div class="bar"><span style="width:44.5%"></span></div>
+  <audio controls preload="none" src="audio/noise/scafe.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">PSTATION</span><span class="ja">駅構内</span><span class="cat">P 公共</span>
+    <span class="val">0.216</span>
+  </div>
+  <div class="bar"><span style="width:57.1%"></span></div>
+  <audio controls preload="none" src="audio/noise/pstation.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">PCAFETER</span><span class="ja">カフェテリア</span><span class="cat">P 公共</span>
+    <span class="val">0.361</span>
+  </div>
+  <div class="bar"><span style="width:73.8%"></span></div>
+  <audio controls preload="none" src="audio/noise/pcafeter.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">OMEETING</span><span class="ja">会議室</span><span class="cat">O 事務</span>
+    <span class="val">0.457</span>
+  </div>
+  <div class="bar"><span style="width:83.0%"></span></div>
+  <audio controls preload="none" src="audio/noise/omeeting.mp3"></audio>
+</div>
+<div class="noise">
+  <div class="head">
+    <span class="en">PRESTO</span><span class="ja">レストラン</span><span class="cat">P 公共</span>
+    <span class="val">0.663</span>
+  </div>
+  <div class="bar"><span style="width:100.0%"></span></div>
+  <audio controls preload="none" src="audio/noise/presto.mp3"></audio>
+</div>
+
+<p class="note">上位の TCAR や DWASHING は低域中心の定常音で、モデルの性能はほとんど落ちません。
+一方、下位の PCAFETER・OMEETING・PRESTO は<strong>周囲の人の話し声</strong>が主成分で、
+同じ音量でも対話が大きく壊れます。</p>
 
 <h2>主な結果</h2>
 <figure><img src="figures/fig1_snr.png" alt="図1: SNR と GPT-4o Score"><figcaption><strong>図1: SNR と GPT-4o Score</strong><br>雑音が大きくなる（SNR が下がる）ほど 3 モデルとも GPT-4o Score が低下する。破線は clean 時のスコア。</figcaption></figure>
@@ -265,7 +481,8 @@ JSPS 科研費 26H02531 による支援を受け実施した。</p>
 <footer>
   <p>中野 隼輔, 中田 亘, 齋藤 佑樹, 猿渡 洋（東京大学）／ NLP若手の会 第20回シンポジウム (YANS 2026)　ポスター発表 S5-P12</p>
   <p>掲載している音声は、本研究の評価で実際にモデルへ入力した音声とモデルの応答音声から
-  抜粋したものです。</p>
+  抜粋したものです。雑音は DEMAND (J. Thiemann, N. Ito, E. Vincent, 2013, CC BY-SA 3.0)
+  の各録音の一部を切り出して使用しています。</p>
 </footer>
 
 </div>
