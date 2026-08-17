@@ -11,12 +11,16 @@
   --bg: #ffffff; --fg: #1a1a1a; --muted: #5c6670; --line: #e2e6ea;
   --card: #f7f9fa; --accent: #2f5d4a; --accent-fg: #ffffff;
   --good: #1f7a3d; --bad: #c0392b; --good-bg: #e8f5ec; --bad-bg: #fdecea;
+  /* --muted is for prose; labels have to stay legible, so they get their own
+     token that flips with the theme instead of one fixed grey. */
+  --label: #2d3740;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #12171a; --fg: #e8ecef; --muted: #9aa5ad; --line: #2a3238;
     --card: #1a2126; --accent: #4a8f72; --accent-fg: #0d1214;
     --good: #6ed58f; --bad: #ff8a7a; --good-bg: #16301f; --bad-bg: #351915;
+    --label: #cdd6dc;
   }
 }
 * { box-sizing: border-box; }
@@ -84,20 +88,101 @@ figcaption { font-size: 13.5px; color: var(--muted); margin-top: 8px; }
   width: 100%; height: auto; display: block; background: #fff;
   border: 1px solid var(--line); border-radius: 8px;
 }
-.track .name { font-weight: 700; font-size: 15px; }
+/* The model name is what you scan for; give it the model's own colour and
+   enough size to register before anything else in the block. */
+.track .name { font-weight: 800; font-size: 20px; color: var(--mc, inherit); letter-spacing: .01em; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .track .name { color: var(--mcd, inherit); }
+}
+/* Sample set 2 groups by model, so the model name moves up into the section
+   header and each track is headed by the condition instead. */
+.cond > header .name { font-weight: 800; font-size: 19px; color: var(--mc, inherit); letter-spacing: .01em; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cond > header .name { color: var(--mcd, inherit); }
+}
+.cond > header h3 { display: flex; align-items: center; }
+.track .cname { font-weight: 700; font-size: 15px; color: var(--label); font-variant-numeric: tabular-nums; }
+.track .label .ratio { margin-left: 8px; }
+.track .label { display: flex; align-items: center; flex-wrap: wrap; gap: 0 2px; }
 audio { width: 100%; margin: 2px 0 0; height: 38px; }
 .model { border-top: 1px dashed var(--line); padding-top: 14px; margin-top: 14px; }
-.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; }
+.dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 7px; }
 .score {
   font-size: 12.5px; font-weight: 700; padding: 2px 9px; border-radius: 20px;
   margin-left: 8px; white-space: nowrap;
 }
 .score.good { background: var(--good-bg); color: var(--good); }
 .score.bad { background: var(--bad-bg); color: var(--bad); }
+.score.none { background: var(--card); color: var(--muted); border: 1px solid var(--line); }
+.tr-label {
+  font-size: 12px; font-weight: 700; letter-spacing: .02em;
+  color: var(--label); margin: 12px 0 3px;
+}
 .transcript {
   font-size: 14px; color: var(--muted); margin: 8px 0 0;
   padding-left: 12px; border-left: 3px solid var(--line);
 }
+/* The judge's own words for the score shown in the .score pill, taken verbatim
+   from the rating.json that produced it. */
+.analysis {
+  font-size: 13px; color: var(--muted); margin: 8px 0 0;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 8px; padding: 9px 12px;
+}
+.analysis .who {
+  display: block; font-size: 12px; font-weight: 700; letter-spacing: .02em;
+  color: var(--label); margin-bottom: 3px;
+}
+/* Table of contents */
+nav.toc {
+  border: 1px solid var(--line); background: var(--card);
+  border-radius: 10px; padding: 14px 18px 16px; margin: 0 0 30px;
+}
+nav.toc .toc-title {
+  margin: 0 0 6px; font-weight: 700; font-size: 14px;
+  color: var(--fg); opacity: .7; letter-spacing: .04em;
+}
+nav.toc ol { margin: 0; padding-left: 1.35em; font-size: 15px; }
+nav.toc li { margin: 3px 0; }
+nav.toc a { text-decoration: none; }
+nav.toc a:hover { text-decoration: underline; }
+h2[id] { scroll-margin-top: 12px; }
+
+/* Caption under a figure: the figures carry their own labels, so this stays short. */
+.cap { font-size: 13.5px; color: var(--muted); margin: 0 0 18px; }
+.cond .cap { margin: 0 0 16px; padding: 0; }
+
+/* CH1 / CH2 / Stereo, stacked with their own labels. */
+.players { margin: 10px 0 0; }
+.players label {
+  display: block; font-size: 13.5px; font-weight: 600; color: var(--label);
+  margin: 0 0 10px; letter-spacing: .01em;
+}
+.players label:last-child { margin-bottom: 0; }
+
+/* Per-noise detail: collapsed by default so the four task figures stay scannable. */
+details {
+  border: 1px solid var(--line); border-radius: 10px; background: var(--card);
+  padding: 10px 14px; margin: 0 0 22px;
+}
+details[open] { padding-bottom: 4px; }
+summary {
+  cursor: pointer; font-size: 13.5px; font-weight: 700;
+  color: var(--accent); list-style-position: outside;
+}
+details figure { margin: 14px 0 0; }
+
+ul.limits { font-size: 14.5px; padding-left: 1.3em; margin: 0 0 20px; }
+ul.limits li { margin-bottom: 8px; }
+
+/* The overview sheets are 18 columns wide; shrunk to the column they are
+   unreadable, so they scroll sideways at their own size instead. */
+.wide { overflow-x: auto; margin: 14px 0 0; }
+.wide img {
+  max-width: none; width: 2600px; height: auto; display: block;
+  border: 1px solid var(--line); border-radius: 8px; background: #fff;
+}
+
 .note {
   font-size: 13.5px; color: var(--muted); background: var(--card);
   border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0;
@@ -136,335 +221,793 @@ footer {
 
 <div class="wrap">
 
-<p class="lead">ポスターに掲載した音声サンプルと図表を置いたページです。
-Full-Duplex 音声対話システムが雑音環境でどのように応答を崩すのかを、実際の音で確認できます。</p>
+<nav class="toc" aria-label="目次">
+  <p class="toc-title">目次</p>
+  <ol>
+    <li><a href="#poster">ポスター</a></li>
+    <li><a href="#samples">音声サンプル 1（まずは 3 つだけ）</a></li>
+    <li><a href="#noises">DEMAND の環境音デモ</a></li>
+    <li><a href="#scope">今回スコープ外になったグラフ</a></li>
+    <li><a href="#limits">評価指標の限界</a></li>
+    <li><a href="#samples2">音声サンプル 2（もっとたくさん）</a></li>
+    <li><a href="#refs">参考文献・謝辞</a></li>
+  </ol>
+</nav>
 
-<h2>ポスター</h2>
-<figure><a href="poster.png"><img src="poster.png" alt="ポスター全体"></a><figcaption>タップで拡大表示できます。</figcaption></figure>
+<h2 id="poster">ポスター</h2>
+<figure><a href="poster.png"><img src="poster.png" alt="ポスター全体"></a></figure>
+<p class="cap">タップで拡大表示できます。</p>
 <p><a class="btn" href="poster.pdf">ポスターPDFをダウンロード</a></p>
 
-<h2>音声サンプル</h2>
-<p>Full-Duplex-Bench<sup>[4]</sup> の <strong>User Interruption</strong> タスクの 1 例です。
-ユーザが最初の話題を話している途中で<strong>別の話題に割り込む</strong>ので、モデルは
-割り込み後の話題に応答するのが正解になります。</p>
-
-<div class="task-box">
-  <dl>
-    <dt>最初の発話</dt><dd class="quote">「How often should I run each week to stay healthy?」</dd>
-    <dt>割り込み発話</dt><dd class="quote">「By the way, do you know any good books to read?」
-      <span class="ratio">（14.36〜18.08 秒）</span></dd>
-    <dt>正解</dt><dd>割り込み後の話題（おすすめの本）について答えること</dd>
-  </dl>
-</div>
-
-<h3>本研究の工夫: 先頭への 4 秒の無音挿入</h3>
-<p>Full-Duplex モデルは音声ストリームが始まった直後から発話できてしまうため、
-会話が始まる前の不安定な挙動がそのまま評価に混ざってしまいます。そこで本研究では、
-<strong>入力音声の先頭に 4 秒の無音を挿入</strong>し、<strong>雑音はその 4 秒にも重畳</strong>
-しました。これにより</p>
-<ul>
-  <li>モデルは会話が始まる前に、<strong>4 秒間その雑音環境だけを聞く</strong>ことができる</li>
-  <li>ストリーム開始直後の発話は <strong>評価対象から除外</strong>される
-    （評価に使うのは 4 秒以降のみで、ベンチマークの時間軸は元のまま保たれる）</li>
-</ul>
-<p>下の波形図で灰色に塗った区間がその 4 秒です。実際、モデルによってはこの区間で
-勝手に喋り始めているのが見て取れます。赤い縦線は割り込み発話の区間です。</p>
-
-<p>以下は同じ対話に対して、雑音の種類だけを変えた 4 条件です。雑音を加える強さ
-（SNR 0 dB）はすべて同じで、変えているのは<strong>雑音の種類だけ</strong>です。
-上から順に、雑音が人間の音声に近い帯域を持つようになります。</p>
+<h2 id="samples">音声サンプル 1（まずは 3 つだけ）</h2>
+<p class="cap">Full-Duplex-Bench<sup>[4]</sup> の <strong>User Interruption</strong> タスクの 1 例。
+ユーザが 4.2〜7.4 秒に「How often should I run each week to stay healthy?」と質問し、
+それに<strong>モデルが応答している最中</strong>の 15.1〜17.3 秒に、
+ユーザが「By the way, do you know any good books to read?」と<strong>別の話題で割り込みます</strong>。
+モデルは<strong>割り込み後の話題に答え直すのが正解</strong>です。
+<strong>雑音なし（clean）と雑音 2 種（SNR 0 dB）</strong>の 3 条件を並べます。
+雑音 2 種は大きさが同じで、変えているのは種類だけです。</p>
 
 <section class="cond">
-  <header><h3>雑音なし</h3></header>
+  <header><h3>雑音なし（clean）</h3></header>
   <div class="body">
-    <div class="wave"><a href="figures/wave_clean.png"><img src="figures/wave_clean.png" alt="雑音なしの波形"></a></div>
-    <div class="track">
-      <p class="label">モデルへの入力音声（この音を聞かせました）</p>
-      <audio controls preload="none" src="audio/clean_input.mp3"></audio>
+    <p class="cap">雑音がなければ 3 モデルとも割り込み後の話題に答えることができ、いずれも 5 点（満点）。</p>
+    <div class="track model" style="--mc:#2CA02C;--mcd:#5FD183">
+      <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_clean_moshi.png"><img loading="lazy" src="figures/wave_clean_moshi.png" alt="雑音なし（clean） における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/clean_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/clean_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/clean_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">I actually just finished reading a book called The Power of Now by Eckhart Tolley. It&#x27;s a really interesting book that talks about being in the present moment. It&#x27;s quite a beautiful book. It&#x27;s not really a book about running, but it&#x27;s an interesting book.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn asks the AI for book recommendations. The AI&#x27;s response directly provides a recommendation for &quot;The Power of Now&quot; by Eckhart Tolley and describes it as interesting, focusing on the present moment, and overall being a beautiful book, even though it clarifies it isn&#x27;t related to running. The AI addresses the user&#x27;s desire for book recommendations rather than the original context about running.</p>
     </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi の応答</span><span class="score good">GPT-4o 5 点</span></p>
-      <audio controls preload="none" src="audio/clean_moshi.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/clean_moshi_stereo.mp3"></audio>
-      <p class="transcript">I actually just finished reading a book called The Power of Now by Eckhart Tolley. It's a really interesting book that talks about being in the present moment. It's quite a beautiful book. It's not really a book about running, but it's an interesting book.</p>
-    </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex の応答</span><span class="score good">GPT-4o 5 点</span></p>
-      <audio controls preload="none" src="audio/clean_personaplex.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/clean_personaplex_stereo.mp3"></audio>
+    <div class="track model" style="--mc:#FF7F0E;--mcd:#FFAB52">
+      <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_clean_personaplex.png"><img loading="lazy" src="figures/wave_clean_personaplex.png" alt="雑音なし（clean） における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/clean_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/clean_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/clean_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
       <p class="transcript">Are some solid picks like The Alchemist for a Feel-Good Read, The Number One Ladies Detective Agency for A More Gentle Mystery, and Maybe Educated if you want a story about perseverance. Those are all pretty engaging.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn asks for book recommendations, which is unrelated to the original question about running for health. The AI&#x27;s response provides a list of book recommendations, directly addressing the user&#x27;s interrupting query. The books suggested cover a variety of interests, making the response relevant and helpful for the user&#x27;s new question.</p>
     </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni の応答</span><span class="score good">GPT-4o 5 点</span></p>
-      <audio controls preload="none" src="audio/clean_freezeomni.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/clean_freezeomni_stereo.mp3"></audio>
+    <div class="track model" style="--mc:#1F77B4;--mcd:#68AFE3">
+      <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_clean_freezeomni.png"><img loading="lazy" src="figures/wave_clean_freezeomni.png" alt="雑音なし（clean） における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/clean_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/clean_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/clean_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
       <p class="transcript">Certainly, here are a few book recommendations across different genres. 1 Fiction: The Night Circus by Erin Mordenstern. This book is a beautifully written tale of magic, love, and competition set in a mysterious circus that appears.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user interrupts the initial context about running with a different question asking for book recommendations. The AI&#x27;s response is directly addressing the user&#x27;s interrupting question by providing a specific book recommendation and even offers some details about the book, making the response highly aligned with the user&#x27;s interest in books.</p>
     </div>
   </div>
 </section>
 <section class="cond">
-  <header><h3>TCAR（走行中の車内）0 dB</h3><span class="ratio">音声帯域パワー占有率 0.000</span></header>
+  <header><h3>TCAR 0 dB</h3><span class="ratio">狭帯域パワー占有率 0.000</span></header>
   <div class="body">
-    <div class="wave"><a href="figures/wave_tcar.png"><img src="figures/wave_tcar.png" alt="TCAR（走行中の車内）0 dBの波形"></a></div>
-    <div class="track">
-      <p class="label">モデルへの入力音声（この音を聞かせました）</p>
-      <audio controls preload="none" src="audio/tcar_input.mp3"></audio>
+    <p class="cap">音量は音声と同じでも、エネルギーがほぼ 100 Hz 未満の低域うなりなので狭帯域はほとんど埋まらず、3 モデルとも 5 点のまま。</p>
+    <div class="track model" style="--mc:#2CA02C;--mcd:#5FD183">
+      <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_tcar_moshi.png"><img loading="lazy" src="figures/wave_tcar_moshi.png" alt="TCAR 0 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/tcar_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/tcar_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/tcar_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">One of my favorites is The Four Hour Body by Tim Ferriss. It&#x27;s a comprehensive guide to health and fitness, with a lot of useful insights.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the topic from running to book recommendations. The AI&#x27;s response directly addresses the new topic by providing a specific book recommendation related to health and fitness. This shows that the AI understood and responded adequately to the user&#x27;s change in topic.</p>
     </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi の応答</span><span class="score good">GPT-4o 5 点</span></p>
-      <audio controls preload="none" src="audio/tcar_moshi.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/tcar_moshi_stereo.mp3"></audio>
-      <p class="transcript">One of my favorites is The Four Hour Body by Tim Ferriss. It's a comprehensive guide to health and fitness, with a lot of useful insights.</p>
+    <div class="track model" style="--mc:#FF7F0E;--mcd:#FFAB52">
+      <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_tcar_personaplex.png"><img loading="lazy" src="figures/wave_tcar_personaplex.png" alt="TCAR 0 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/tcar_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/tcar_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/tcar_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">If you like mystery, I&#x27;d suggest the Hound of the Baskervilles. It&#x27;s pretty gripping. Or for something more recent and mind-bending, try the Ninth Circus. And for something a bit off the beaten path, you could go for The Alchemist. It&#x27;s quick and inspiring. Those are all good picks. Give them a try.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user interrupts to ask for book recommendations, diverging from the initial topic about running for health. The AI responds directly to the user&#x27;s interrupting turn, providing several book suggestions across different genres. The response is focused entirely on the user&#x27;s new question, showing a perfect understanding of the change in topic.</p>
     </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex の応答</span><span class="score good">GPT-4o 5 点</span></p>
-      <audio controls preload="none" src="audio/tcar_personaplex.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/tcar_personaplex_stereo.mp3"></audio>
-      <p class="transcript">If you like mystery, I'd suggest the Hound of the Baskervilles. It's pretty gripping. Or for something more recent and mind-bending, try the Ninth Circus. And for something a bit off the beaten path, you could go for The Alchemist. It's quick and inspiring. Those are all good picks. Give them a try.</p>
-    </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni の応答</span><span class="score good">GPT-4o 5 点</span></p>
-      <audio controls preload="none" src="audio/tcar_freezeomni.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/tcar_freezeomni_stereo.mp3"></audio>
+    <div class="track model" style="--mc:#1F77B4;--mcd:#68AFE3">
+      <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_tcar_freezeomni.png"><img loading="lazy" src="figures/wave_tcar_freezeomni.png" alt="TCAR 0 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/tcar_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/tcar_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/tcar_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
       <p class="transcript">Certainly, here are a few book recommendations across different Zhangyuas. One Fiction, The Night Cirques by Aaron Mules Stern. This novel is a beautiful, enchanting tale of two young magicians who are drawn into asterious competition.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn asks for book recommendations, while the AI provides a response that gives a specific book recommendation, including a brief synopsis. The AI&#x27;s response is directly related to the user&#x27;s request for good books.</p>
     </div>
   </div>
 </section>
 <section class="cond">
-  <header><h3>PCAFETER（カフェテリア）0 dB</h3><span class="ratio">音声帯域パワー占有率 0.361</span></header>
+  <header><h3>OMEETING 0 dB</h3><span class="ratio">狭帯域パワー占有率 0.457</span></header>
   <div class="body">
-    <div class="wave"><a href="figures/wave_pcafeter.png"><img src="figures/wave_pcafeter.png" alt="PCAFETER（カフェテリア）0 dBの波形"></a></div>
-    <div class="track">
-      <p class="label">モデルへの入力音声（この音を聞かせました）</p>
-      <audio controls preload="none" src="audio/pcafeter_input.mp3"></audio>
+    <p class="cap">同じ 0 dB でも周囲の話し声が狭帯域を占めるため、3 モデルとも 0 点に崩れる。</p>
+    <div class="track model" style="--mc:#2CA02C;--mcd:#5FD183">
+      <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_omeeting_moshi.png"><img loading="lazy" src="figures/wave_omeeting_moshi.png" alt="OMEETING 0 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/omeeting_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/omeeting_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/omeeting_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">I actually do. It&#x27;s a beautiful park that&#x27;s been around for centuries. It&#x27;s got a lot of history.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn is asking for book recommendations, whereas the AI&#x27;s response is unrelated and talks about a historical park instead. The response does not address the user&#x27;s question about books.</p>
     </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi の応答</span><span class="score bad">GPT-4o 0 点</span></p>
-      <audio controls preload="none" src="audio/pcafeter_moshi.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/pcafeter_moshi_stereo.mp3"></audio>
-      <p class="transcript">Yes, I can recommend some. But first, you need to know your body type. Are you more evident?</p>
+    <div class="track model" style="--mc:#FF7F0E;--mcd:#FFAB52">
+      <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_omeeting_personaplex.png"><img loading="lazy" src="figures/wave_omeeting_personaplex.png" alt="OMEETING 0 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/omeeting_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/omeeting_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/omeeting_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Try a basic pasta dish with garlic, olive oil, fresh basil, a bit of parmesan, or a classic tomato basil spaghetti. Another good option is a simple grilled chicken with lemon, rusted veggies that&#x27;s tasty and easy for a first-time cook.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn is asking for book recommendations, which is unrelated to the original question about running. The AI&#x27;s response, however, provides cooking suggestions and does not address the user&#x27;s request for book recommendations at all. The response is completely irrelevant to the user&#x27;s inquiry about books.</p>
     </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex の応答</span><span class="score bad">GPT-4o 0 点</span></p>
-      <audio controls preload="none" src="audio/pcafeter_personaplex.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/pcafeter_personaplex_stereo.mp3"></audio>
-      <p class="transcript">Simple tricks, try to keep the room cool, limit screens an hour before, do a quick stretch, have a warm drink. Those usually help you fall asleep faster, right?</p>
-    </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni の応答</span><span class="score bad">GPT-4o 0 点</span></p>
-      <audio controls preload="none" src="audio/pcafeter_freezeomni.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/pcafeter_freezeomni_stereo.mp3"></audio>
-      <p class="transcript">Details, project files, and any other forms of communication that show your involvement. 2. Communicate clearly, approach the person directly and calmly. Explain that you believe they are misatreating your work and provide evidence to.</p>
-    </div>
-  </div>
-</section>
-<section class="cond">
-  <header><h3>OMEETING（会議室）0 dB</h3><span class="ratio">音声帯域パワー占有率 0.457</span></header>
-  <div class="body">
-    <div class="wave"><a href="figures/wave_omeeting.png"><img src="figures/wave_omeeting.png" alt="OMEETING（会議室）0 dBの波形"></a></div>
-    <div class="track">
-      <p class="label">モデルへの入力音声（この音を聞かせました）</p>
-      <audio controls preload="none" src="audio/omeeting_input.mp3"></audio>
-    </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi の応答</span><span class="score bad">GPT-4o 0 点</span></p>
-      <audio controls preload="none" src="audio/omeeting_moshi.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/omeeting_moshi_stereo.mp3"></audio>
-      <p class="transcript">I actually do. It's a beautiful park that's been around for centuries. It's got a lot of history.</p>
-    </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex の応答</span><span class="score bad">GPT-4o 0 点</span></p>
-      <audio controls preload="none" src="audio/omeeting_personaplex.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/omeeting_personaplex_stereo.mp3"></audio>
-      <p class="transcript">Try a basic pasta dish with garlic, olive oil, fresh basil, a bit of parmesan, or a classic tomato basil spaghetti. Another good option is a simple grilled chicken with lemon, rusted veggies that's tasty and easy for a first-time cook.</p>
-    </div>
-    <div class="track model">
-      <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni の応答</span><span class="score bad">GPT-4o 0 点</span></p>
-      <audio controls preload="none" src="audio/omeeting_freezeomni.mp3"></audio>
-      <p class="sublabel">入力とモデル出力を同時に聴く（左＝入力音声／右＝モデル出力）</p>
-      <audio controls preload="none" src="audio/omeeting_freezeomni_stereo.mp3"></audio>
+    <div class="track model" style="--mc:#1F77B4;--mcd:#68AFE3">
+      <p class="label"><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_omeeting_freezeomni.png"><img loading="lazy" src="figures/wave_omeeting_freezeomni.png" alt="OMEETING 0 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/omeeting_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/omeeting_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/omeeting_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
       <p class="transcript">Depends on several factors, including the size of the database, the frequency of updates, and the specific requirements of your application. Here are some guidelines. 1. Daily mains. Running basic checks and</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user interrupts their initial inquiry about running frequency with a completely new and unrelated question about book recommendations. Instead of addressing this new question, the AI&#x27;s response remains focused on the original context, discussing general guidelines for running, likely misunderstanding the context shift to database management or maintenance, which is irrelevant to the user&#x27;s sudden inquiry about books.</p>
     </div>
   </div>
 </section>
 
-<p class="note">走行中の車内 (TCAR) の雑音では 3 モデルとも本の話題に正しく応答できていますが、
-カフェテリア (PCAFETER) や会議室 (OMEETING) の雑音では、まったく無関係な話題を
-話し始めてしまいます。同じ音量の雑音でも、<strong>人間の音声に近い帯域にパワーを持つ雑音ほど
-対話が壊れる</strong>という図3 の主張が、そのまま聞き取れる例です。</p>
-
-<h2>18 種類の雑音を聴く</h2>
-<p>実験に使った DEMAND<sup>[5]</sup> の 18 種類の雑音を、10 秒ずつそのまま聴けます。
-図3 の横軸である<strong>音声帯域パワー占有率（雑音の全パワーに占める 300〜3400 Hz の割合）</strong>
-が小さい順に並べているので、下にいくほど「人の話し声に近い雑音」になります。
-聴き比べやすいように RMS を揃え、モデルへの入力と同じ 24 kHz で書き出しています。</p>
+<h2 id="noises">DEMAND の環境音デモ</h2>
+<p class="cap">実験に使った DEMAND<sup>[5]</sup> の 18 種類の雑音を 10 秒ずつ。
+<strong>全体パワーに対する狭帯域（300〜3400 Hz）パワー占有率</strong>が小さい順に並べています。
+名前の頭文字は DEMAND のカテゴリで、
+D: Domestic ／ N: Nature ／ O: Office ／ P: Public ／ S: Street ／ T: Transportation です。
+RMS を揃え、モデルへの入力と同じ 24 kHz で書き出しています。</p>
 
 <div class="noise">
   <div class="head">
-    <span class="en">TCAR</span><span class="ja">走行中の車内</span><span class="cat">T 交通</span>
-    <span class="val">0.000</span>
+    <span class="en">TCAR</span><span class="val">0.000</span>
   </div>
   <div class="bar"><span style="width:2.1%"></span></div>
   <audio controls preload="none" src="audio/noise/tcar.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">DWASHING</span><span class="ja">洗濯機のある部屋</span><span class="cat">D 家庭</span>
-    <span class="val">0.001</span>
+    <span class="en">DWASHING</span><span class="val">0.001</span>
   </div>
   <div class="bar"><span style="width:4.1%"></span></div>
   <audio controls preload="none" src="audio/noise/dwashing.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">OOFFICE</span><span class="ja">オフィス</span><span class="cat">O 事務</span>
-    <span class="val">0.002</span>
+    <span class="en">OOFFICE</span><span class="val">0.002</span>
   </div>
   <div class="bar"><span style="width:5.6%"></span></div>
   <audio controls preload="none" src="audio/noise/ooffice.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">TBUS</span><span class="ja">バス車内</span><span class="cat">T 交通</span>
-    <span class="val">0.003</span>
+    <span class="en">TBUS</span><span class="val">0.003</span>
   </div>
   <div class="bar"><span style="width:6.2%"></span></div>
   <audio controls preload="none" src="audio/noise/tbus.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">NFIELD</span><span class="ja">野原</span><span class="cat">N 自然</span>
-    <span class="val">0.003</span>
+    <span class="en">NFIELD</span><span class="val">0.003</span>
   </div>
   <div class="bar"><span style="width:7.2%"></span></div>
   <audio controls preload="none" src="audio/noise/nfield.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">OHALLWAY</span><span class="ja">廊下</span><span class="cat">O 事務</span>
-    <span class="val">0.013</span>
+    <span class="en">OHALLWAY</span><span class="val">0.013</span>
   </div>
   <div class="bar"><span style="width:14.1%"></span></div>
   <audio controls preload="none" src="audio/noise/ohallway.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">SPSQUARE</span><span class="ja">広場</span><span class="cat">S 街路</span>
-    <span class="val">0.042</span>
+    <span class="en">SPSQUARE</span><span class="val">0.042</span>
   </div>
   <div class="bar"><span style="width:25.1%"></span></div>
   <audio controls preload="none" src="audio/noise/spsquare.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">NRIVER</span><span class="ja">川辺</span><span class="cat">N 自然</span>
-    <span class="val">0.043</span>
+    <span class="en">NRIVER</span><span class="val">0.043</span>
   </div>
   <div class="bar"><span style="width:25.6%"></span></div>
   <audio controls preload="none" src="audio/noise/nriver.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">DKITCHEN</span><span class="ja">台所</span><span class="cat">D 家庭</span>
-    <span class="val">0.044</span>
+    <span class="en">DKITCHEN</span><span class="val">0.044</span>
   </div>
   <div class="bar"><span style="width:25.7%"></span></div>
   <audio controls preload="none" src="audio/noise/dkitchen.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">STRAFFIC</span><span class="ja">交通量の多い道路</span><span class="cat">S 街路</span>
-    <span class="val">0.058</span>
+    <span class="en">STRAFFIC</span><span class="val">0.058</span>
   </div>
   <div class="bar"><span style="width:29.5%"></span></div>
   <audio controls preload="none" src="audio/noise/straffic.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">NPARK</span><span class="ja">公園</span><span class="cat">N 自然</span>
-    <span class="val">0.084</span>
+    <span class="en">NPARK</span><span class="val">0.084</span>
   </div>
   <div class="bar"><span style="width:35.6%"></span></div>
   <audio controls preload="none" src="audio/noise/npark.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">TMETRO</span><span class="ja">地下鉄車内</span><span class="cat">T 交通</span>
-    <span class="val">0.092</span>
+    <span class="en">TMETRO</span><span class="val">0.092</span>
   </div>
   <div class="bar"><span style="width:37.2%"></span></div>
   <audio controls preload="none" src="audio/noise/tmetro.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">DLIVING</span><span class="ja">居間</span><span class="cat">D 家庭</span>
-    <span class="val">0.131</span>
+    <span class="en">DLIVING</span><span class="val">0.131</span>
   </div>
   <div class="bar"><span style="width:44.4%"></span></div>
   <audio controls preload="none" src="audio/noise/dliving.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">SCAFE</span><span class="ja">屋外カフェ</span><span class="cat">S 街路</span>
-    <span class="val">0.131</span>
+    <span class="en">SCAFE</span><span class="val">0.131</span>
   </div>
   <div class="bar"><span style="width:44.5%"></span></div>
   <audio controls preload="none" src="audio/noise/scafe.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">PSTATION</span><span class="ja">駅構内</span><span class="cat">P 公共</span>
-    <span class="val">0.216</span>
+    <span class="en">PSTATION</span><span class="val">0.216</span>
   </div>
   <div class="bar"><span style="width:57.1%"></span></div>
   <audio controls preload="none" src="audio/noise/pstation.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">PCAFETER</span><span class="ja">カフェテリア</span><span class="cat">P 公共</span>
-    <span class="val">0.361</span>
+    <span class="en">PCAFETER</span><span class="val">0.361</span>
   </div>
   <div class="bar"><span style="width:73.8%"></span></div>
   <audio controls preload="none" src="audio/noise/pcafeter.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">OMEETING</span><span class="ja">会議室</span><span class="cat">O 事務</span>
-    <span class="val">0.457</span>
+    <span class="en">OMEETING</span><span class="val">0.457</span>
   </div>
   <div class="bar"><span style="width:83.0%"></span></div>
   <audio controls preload="none" src="audio/noise/omeeting.mp3"></audio>
 </div>
 <div class="noise">
   <div class="head">
-    <span class="en">PRESTO</span><span class="ja">レストラン</span><span class="cat">P 公共</span>
-    <span class="val">0.663</span>
+    <span class="en">PRESTO</span><span class="val">0.663</span>
   </div>
   <div class="bar"><span style="width:100.0%"></span></div>
   <audio controls preload="none" src="audio/noise/presto.mp3"></audio>
 </div>
 
-<p class="note">上位の TCAR や DWASHING は低域中心の定常音で、モデルの性能はほとんど落ちません。
-一方、下位の PCAFETER・OMEETING・PRESTO は<strong>周囲の人の話し声</strong>が主成分で、
-同じ音量でも対話が大きく壊れます。</p>
+<p class="note">狭帯域パワー占有率が<strong>低い</strong>雑音ではモデルの性能は落ちにくく、
+<strong>高い</strong>雑音では同じ音量でも対話が大きく壊れます。</p>
 
-<h2>主な結果</h2>
-<figure><img src="figures/fig1_snr.png" alt="図1: SNR と GPT-4o Score"><figcaption><strong>図1: SNR と GPT-4o Score</strong><br>雑音が大きくなる（SNR が下がる）ほど 3 モデルとも GPT-4o Score が低下する。破線は clean 時のスコア。</figcaption></figure>
-<figure><img src="figures/fig2_heatmap.png" alt="図2: 雑音種類別 GPT-4o Score の悪化量"><figcaption><strong>図2: 雑音種類別 GPT-4o Score の悪化量</strong><br>色が濃いほど clean からの悪化が大きい。同じ SNR でも雑音の種類によって悪化量が大きくばらつき、OMEETING・PCAFETER・PRESTO で特に大きい。</figcaption></figure>
-<figure><img src="figures/fig3_band.png" alt="図3: 音声帯域パワー占有率と悪化量の相関"><figcaption><strong>図3: 音声帯域パワー占有率と悪化量の相関</strong><br>横軸は雑音の全パワーに占める狭帯域電話帯域 (300〜3400 Hz) のパワーの割合。SNR 0 dB での結果で、Spearman の順位相関は Moshi ρ=0.959、PersonaPlex ρ=0.901、Freeze-Omni ρ=0.913。人間の音声に近い帯域を持つ雑音ほど性能を落とす。</figcaption></figure>
+<h2 id="scope">今回スコープ外になったグラフ</h2>
+<p class="cap">Full-Duplex-Bench の 4 タスクすべてを、同じ 18 種類 × 6 SNR で計測した結果です。
+TOR・Latency・Frequency・JSD は下記「評価指標の限界」の理由で条件間の比較には使えないと判断し、
+ポスターからは外しました。検証できるようすべて掲載します。
+指標の定義はポスターと同じ（local 基準＋応答遅延 2 秒上限）です。</p>
 
-<h2>参考文献</h2>
+<h3>Pause Handling</h3>
+<p class="cap">ユーザのターンで黙っていられるか（TOR は低いほど良い）</p>
+<figure><a href="figures/scope_pause.png"><img loading="lazy" src="figures/scope_pause.png" alt="Pause Handling の指標（18 種平均）"></a></figure>
+<p class="cap">18 種類の雑音を平均した結果。破線と右端 clean 位置の点は、雑音なしのときの値。</p>
+<details>
+  <summary>雑音ごとの詳細（タップで開く）</summary>
+  <div class="wide"><a href="figures/scope_pause_detail_large.png"><img loading="lazy" src="figures/scope_pause_detail.png" alt="Pause Handling の雑音種類別の結果"></a></div>
+  <p class="cap">18 種類を 1 列ずつ並べたシート。横にスクロールできます。図をタップすると高解像度で開きます。</p>
+</details>
+<h3>Backchanneling</h3>
+<p class="cap">相槌を入れられるか（TOR ↓ / 頻度 ↑ / JSD ↓）</p>
+<figure><a href="figures/scope_backchannel.png"><img loading="lazy" src="figures/scope_backchannel.png" alt="Backchanneling の指標（18 種平均）"></a></figure>
+<p class="cap">18 種類の雑音を平均した結果。破線と右端 clean 位置の点は、雑音なしのときの値。</p>
+<details>
+  <summary>雑音ごとの詳細（タップで開く）</summary>
+  <div class="wide"><a href="figures/scope_backchannel_detail_large.png"><img loading="lazy" src="figures/scope_backchannel_detail.png" alt="Backchanneling の雑音種類別の結果"></a></div>
+  <p class="cap">18 種類を 1 列ずつ並べたシート。横にスクロールできます。図をタップすると高解像度で開きます。</p>
+</details>
+<h3>Smooth Turn Taking</h3>
+<p class="cap">スムーズにターンテイクできるか（TOR ↑ / 遅延 ↓）</p>
+<figure><a href="figures/scope_smooth.png"><img loading="lazy" src="figures/scope_smooth.png" alt="Smooth Turn Taking の指標（18 種平均）"></a></figure>
+<p class="cap">18 種類の雑音を平均した結果。破線と右端 clean 位置の点は、雑音なしのときの値。</p>
+<details>
+  <summary>雑音ごとの詳細（タップで開く）</summary>
+  <div class="wide"><a href="figures/scope_smooth_detail_large.png"><img loading="lazy" src="figures/scope_smooth_detail.png" alt="Smooth Turn Taking の雑音種類別の結果"></a></div>
+  <p class="cap">18 種類を 1 列ずつ並べたシート。横にスクロールできます。図をタップすると高解像度で開きます。</p>
+</details>
+<h3>User Interruption</h3>
+<p class="cap">割り込みに適切に反応できるか（TOR ↑ / 遅延 ↓ / GPT-4o ↑）</p>
+<figure><a href="figures/scope_interruption.png"><img loading="lazy" src="figures/scope_interruption.png" alt="User Interruption の指標（18 種平均）"></a></figure>
+<p class="cap">18 種類の雑音を平均した結果。破線と右端 clean 位置の点は、雑音なしのときの値。</p>
+<details>
+  <summary>雑音ごとの詳細（タップで開く）</summary>
+  <div class="wide"><a href="figures/scope_interruption_detail_large.png"><img loading="lazy" src="figures/scope_interruption_detail.png" alt="User Interruption の雑音種類別の結果"></a></div>
+  <p class="cap">18 種類を 1 列ずつ並べたシート。横にスクロールできます。図をタップすると高解像度で開きます。</p>
+</details>
+
+<h2 id="limits">評価指標の限界</h2>
+<p class="cap">今回用いた Full-Duplex-Bench が提案した指標には、いくつか判定の落とし穴があります。
+ポスター右側で詳しく述べています。</p>
+<ul class="limits">
+  <li><strong>TOR</strong>：出力音声<strong>全体</strong>を 1 区間として「1 秒以上または 2 語以上」で判定するため、
+    どこか 1 箇所でも喋れば TO = 1 になる。
+    <strong>Backchanneling</strong> では、TO = 0 である出力音声しか分析対象にならないため、
+    実際の挙動の分析とは言えない。
+    <strong>Pause Handling</strong> では、相槌だけを 2 回返した応答も TO = 1 と数えられてしまう。</li>
+  <li><strong>Latency</strong>：実際は Latency = 0.060 秒ほど（聞いた感じはほぼ 0 秒）のサンプルだったとしても、
+    Full-Duplex-Bench では Latency = 0.240 秒 と計算されてしまうことがある。
+    これは Latency の計算が<strong>アノテーションの質や ASR・VAD の性能に大きく依存している</strong>ためであり、
+    間やテンポが重要な音声対話の分析においては問題がある。</li>
+  <li><strong>GPT-4o Score</strong>：割り込み前から続いている発話も採点テキストに含まれるため、
+    本来評価すべき「割り込みへの応答」だけを見ているとは限らない。</li>
+</ul>
+
+<h2 id="samples2">音声サンプル 2（もっとたくさん）</h2>
+<p class="cap">音声サンプル 1 と同じ対話・同じ構成です。まず雑音の種類を PCAFETER に固定して
+SNR を変えたもの、続いて音声サンプル 1 に載せられなかった雑音の種類（いずれも SNR 0 dB）。
+どちらも<strong>モデルごとにまとめて</strong>並べています。</p>
+
+<h3>SNR による変化（雑音は PCAFETER で固定）</h3>
+<section class="cond" style="--mc:#2CA02C;--mcd:#5FD183">
+  <header><h3><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi</span></h3><span class="ratio">狭帯域パワー占有率 0.361</span></header>
+  <div class="body">
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER −5 dB</span><span class="score bad">GPT-4o 1 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_m5_moshi.png"><img loading="lazy" src="figures/wave_pcafeter_m5_moshi.png" alt="PCAFETER −5 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_m5_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/pcafeter_m5_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_m5_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">yet but I&#x27;ll keep an eye out and let you know if I find any. No, actually, I&#x27;ve never heard of it, but I&#x27;ll look into it and see if I can find any information.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn asks for recommendations on good books to read. The AI&#x27;s response is vague and acknowledges the user&#x27;s request by stating it will look into it, but it does not provide any specific book suggestions or directly relate to the request for a good book recommendation. The AI seems to misunderstand the question and offers a general response rather than addressing the user&#x27;s inquire about books.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER 0 dB</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_0_moshi.png"><img loading="lazy" src="figures/wave_pcafeter_0_moshi.png" alt="PCAFETER 0 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_0_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/pcafeter_0_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_0_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Yes, I can recommend some. But first, you need to know your body type. Are you more evident?</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn inquires about book recommendations, which abruptly shifts the conversation from running frequency to reading. However, the AI&#x27;s response does not address the user&#x27;s new question about books at all. Instead, the AI erroneously resumes discussing health and exercise, mentioning body type, which is not related to the user&#x27;s request for book recommendations.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +5 dB</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_5_moshi.png"><img loading="lazy" src="figures/wave_pcafeter_5_moshi.png" alt="PCAFETER +5 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_5_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/pcafeter_5_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_5_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Yes, make sure to pace yourself and take breaks when you need them. Also, don&#x27;t try to push.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the topic from running to asking for book recommendations. However, the AI continues to address the original topic of running rather than answering the new question about books. The AI&#x27;s response is not related to the user&#x27;s new query about books.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +10 dB</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_10_moshi.png"><img loading="lazy" src="figures/wave_pcafeter_10_moshi.png" alt="PCAFETER +10 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_10_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/pcafeter_10_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_10_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">One of my favorites is The Alchemist by Paolo Coelho. It&#x27;s a beautiful story about a young shepherd who sets out on a journey to fulfill his personal legend.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn is a request for book recommendations, which is unrelated to the initial question about running. The AI&#x27;s response directly addresses the user&#x27;s interrupting question by recommending a book and providing a brief description of its content.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +15 dB</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_15_moshi.png"><img loading="lazy" src="figures/wave_pcafeter_15_moshi.png" alt="PCAFETER +15 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_15_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/pcafeter_15_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_15_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">I&#x27;d suggest reading The Long Walk by Nick Harrison. It&#x27;s a great book about a 400-mile walk across the UK.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the topic from fitness to book recommendations. The AI&#x27;s response is directly related to the user&#x27;s new question about good books, providing a specific book suggestion and a brief description of its content.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +20 dB</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_20_moshi.png"><img loading="lazy" src="figures/wave_pcafeter_20_moshi.png" alt="PCAFETER +20 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_20_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/pcafeter_20_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_20_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">I&#x27;d love to recommend a few. What kind of genre do you like? Okay. Okay.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the conversation from a discussion about a running routine to a request for book recommendations. The AI&#x27;s response appropriately addresses the user&#x27;s new query about books by asking for the user&#x27;s preferred genre, which is a logical and relevant follow-up question.</p>
+    </div>
+  </div>
+</section>
+<section class="cond" style="--mc:#FF7F0E;--mcd:#FFAB52">
+  <header><h3><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex</span></h3><span class="ratio">狭帯域パワー占有率 0.361</span></header>
+  <div class="body">
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER −5 dB</span><span class="score none">GPT-4o 採点対象外</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_m5_personaplex.png"><img loading="lazy" src="figures/wave_pcafeter_m5_personaplex.png" alt="PCAFETER −5 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_m5_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/pcafeter_m5_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_m5_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript"></p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>TO = 0 と判定されたため採点対象外。</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER 0 dB</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_0_personaplex.png"><img loading="lazy" src="figures/wave_pcafeter_0_personaplex.png" alt="PCAFETER 0 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_0_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/pcafeter_0_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_0_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Simple tricks, try to keep the room cool, limit screens an hour before, do a quick stretch, have a warm drink. Those usually help you fall asleep faster, right?</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn is asking for book recommendations, while the AI&#x27;s response mentions tips for falling asleep faster, which is unrelated to the topic of books or reading. There is no connection between the user&#x27;s query about books and the provided information on sleep hygiene.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +5 dB</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_5_personaplex.png"><img loading="lazy" src="figures/wave_pcafeter_5_personaplex.png" alt="PCAFETER +5 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_5_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/pcafeter_5_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_5_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">There are a few solid pics you might enjoy. You could try The Night Circus by Erin Morgenstern. It&#x27;s magical, captivating, and pretty quick, perfect for a weekend. Another good one is The Alchemist by Paolo Cuelho. It&#x27;s short, uplifting, and perfect for a</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user interrupts the initial conversation about running frequency with a new question about book recommendations. The AI&#x27;s response shifts focus immediately and provides book suggestions in line with the user&#x27;s new query, naming specific books and describing their elements.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +10 dB</span><span class="score good">GPT-4o 3 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_10_personaplex.png"><img loading="lazy" src="figures/wave_pcafeter_10_personaplex.png" alt="PCAFETER +10 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_10_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/pcafeter_10_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_10_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Are a few I&#x27;d recommend. For something light and fun, you could try The Alchemist. It&#x27;s quick and positive. If you want something a bit deeper, you might like The Alchemist. It&#x27;s a bit longer but really engaging. Another good choice is the power of now. It&#x27;s easy to read and helpful for staying.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user interrupts the main conversation about running frequency with a question about book recommendations. The AI&#x27;s response partially addresses this by suggesting a few books, although it mistakenly repeats &quot;The Alchemist&quot; and shows some incoherence at the end. The recommendation also contains typographical errors like lowercase titles and incomplete sentences.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +15 dB</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_15_personaplex.png"><img loading="lazy" src="figures/wave_pcafeter_15_personaplex.png" alt="PCAFETER +15 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_15_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/pcafeter_15_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_15_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">There are a few I&#x27;d recommend. You could try The Alchemist for a quick, inspiring read. Or if you like something deeper, Sapiens gives a nice overview. And if you want something more personal, E is for Everyone is pretty moving.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn pivots from the topic of running to a query about book recommendations. The AI responds directly to this new question by suggesting a variety of book options. Each book recommendation addresses different reader preferences, aligning well with the user&#x27;s interest in good books to read.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +20 dB</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_20_personaplex.png"><img loading="lazy" src="figures/wave_pcafeter_20_personaplex.png" alt="PCAFETER +20 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_20_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/pcafeter_20_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_20_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Lot of good books. You might like a story like The Night Circus. You could also try the Silver Linings playbook. I heard The Nightingale is a great read right now. And if you want something more serious, The Power of Now by Eckhart Tolle is pretty popular.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn asks for book recommendations, and the AI&#x27;s response provides several book suggestions, addressing the user&#x27;s query. The list of book recommendations is varied, including both fiction and non-fiction, which aligns well with the user&#x27;s open-ended request for any good books. The response is directly related to and perfectly satisfies the user&#x27;s interrupting interest.</p>
+    </div>
+  </div>
+</section>
+<section class="cond" style="--mc:#1F77B4;--mcd:#68AFE3">
+  <header><h3><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni</span></h3><span class="ratio">狭帯域パワー占有率 0.361</span></header>
+  <div class="body">
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER −5 dB</span><span class="score none">GPT-4o 採点対象外</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_m5_freezeomni.png"><img loading="lazy" src="figures/wave_pcafeter_m5_freezeomni.png" alt="PCAFETER −5 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_m5_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/pcafeter_m5_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_m5_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript"></p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>TO = 0 と判定されたため採点対象外。</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER 0 dB</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_0_freezeomni.png"><img loading="lazy" src="figures/wave_pcafeter_0_freezeomni.png" alt="PCAFETER 0 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_0_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/pcafeter_0_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_0_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Details, project files, and any other forms of communication that show your involvement. 2. Communicate clearly, approach the person directly and calmly. Explain that you believe they are misatreating your work and provide evidence to.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn changes the conversation topic from running routines to book recommendations. However, the AI&#x27;s response is entirely unrelated to either the main topic or the interrupting turn. It appears to be a fragment of unrelated advice, possibly about workplace issues, which doesn&#x27;t address the question about book recommendations or running routines.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +5 dB</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_5_freezeomni.png"><img loading="lazy" src="figures/wave_pcafeter_5_freezeomni.png" alt="PCAFETER +5 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_5_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/pcafeter_5_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_5_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Absolutely, here are a few book recommendations across different genres. E. The Night Circus by Aaron Mordenstern: A magical and enchanting story about two young magicians who are drawn into a mysterious competition. The Midnight Library.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the topic from a discussion about running to asking about book recommendations. The AI&#x27;s response directly addresses the user&#x27;s new query by offering book recommendations, which is precisely what the user inquired about.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +10 dB</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_10_freezeomni.png"><img loading="lazy" src="figures/wave_pcafeter_10_freezeomni.png" alt="PCAFETER +10 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_10_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/pcafeter_10_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_10_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Rugnio Yungo went ho Xia Bangju, Doka Yi Sang Sao Yun Ti Wen, Taku Zing Li Ti Gong Juan Chu, Zi Shi the Sing Si Ho Ji Sing Sang in the Taozua. Li Ru, Nikai went Tatian Si Yu Ba, Sing Wenzi Shing, Ri Chung Guan Li Dan. She</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn asks for recommendations on good books to read. However, the AI&#x27;s response is nonsensical and does not address the user&#x27;s request for book recommendations or any related topic. The text appears to be a series of meaningless phrases and does not engage with the user&#x27;s interest in books at all.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +15 dB</span><span class="score none">GPT-4o 採点対象外</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_15_freezeomni.png"><img loading="lazy" src="figures/wave_pcafeter_15_freezeomni.png" alt="PCAFETER +15 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_15_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/pcafeter_15_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_15_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript"></p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>TO = 0 と判定されたため採点対象外。</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PCAFETER +20 dB</span><span class="score none">GPT-4o 採点対象外</span></p>
+      <div class="wave"><a href="figures/wave_pcafeter_20_freezeomni.png"><img loading="lazy" src="figures/wave_pcafeter_20_freezeomni.png" alt="PCAFETER +20 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pcafeter_20_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/pcafeter_20_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pcafeter_20_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript"></p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>TO = 0 と判定されたため採点対象外。</p>
+    </div>
+  </div>
+</section>
+
+<h3>雑音の種類による変化（いずれも SNR 0 dB）</h3>
+<section class="cond" style="--mc:#2CA02C;--mcd:#5FD183">
+  <header><h3><span class="dot" style="background:#2CA02C"></span><span class="name">Moshi</span></h3></header>
+  <div class="body">
+    <div class="track model">
+      <p class="label"><span class="cname">DKITCHEN 0 dB</span><span class="ratio">占有率 0.044</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_dkitchen_moshi.png"><img loading="lazy" src="figures/wave_dkitchen_moshi.png" alt="DKITCHEN 0 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/dkitchen_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/dkitchen_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/dkitchen_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Yes, there are some studies that suggest running at least three times a week can help improve cardiovascular health and overall fitness.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user interrupts the context with a completely different question regarding book recommendations, while the AI continues to address the original question about a running schedule. The AI did not address the user&#x27;s interrupting turn, which asked for book recommendations.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">NPARK 0 dB</span><span class="ratio">占有率 0.084</span><span class="score good">GPT-4o 3 点</span></p>
+      <div class="wave"><a href="figures/wave_npark_moshi.png"><img loading="lazy" src="figures/wave_npark_moshi.png" alt="NPARK 0 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/npark_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/npark_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/npark_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Yeah, there are a few great ones out there. One of my favorites is The Running Book by John Berrios.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the topic from running frequency to book recommendations. The AI&#x27;s response acknowledges this change in topic and suggests a specific book that is related to running, which ties back to the initial topic of running but may not address the user&#x27;s broader interest in good books to read outside of running.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">SCAFE 0 dB</span><span class="ratio">占有率 0.131</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_scafe_moshi.png"><img loading="lazy" src="figures/wave_scafe_moshi.png" alt="SCAFE 0 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/scafe_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/scafe_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/scafe_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">One that comes to mind is called The Curious Instant of the Dog in the Nighttime. It&#x27;s a mystery novel written by Mark Haddon. It&#x27;s a great book for young adults.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the topic from running to asking for book recommendations. The AI&#x27;s response directly addresses the user&#x27;s new query by recommending a particular book and providing a brief description. The AI&#x27;s response is perfectly relevant to the interrupting question about books.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PSTATION 0 dB</span><span class="ratio">占有率 0.216</span><span class="score bad">GPT-4o 1 点</span></p>
+      <div class="wave"><a href="figures/wave_pstation_moshi.png"><img loading="lazy" src="figures/wave_pstation_moshi.png" alt="PSTATION 0 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pstation_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/pstation_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pstation_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">PET, but I recommend the book The Slow Cooker Bible by Susan and David Reed. It has over 100 recipes and is perfect for both beginners and experienced slow cooker enthusiasts.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the conversation from running and health to asking about good books to read. The AI&#x27;s response provides a book recommendation, but it seems to mention &quot;PET,&quot; which is unrelated to the user&#x27;s question. While the book suggested might be interesting, it doesn&#x27;t correctly address the user&#x27;s query about any good books to read. The AI fails to directly engage with the user&#x27;s inquiry about books and instead introduces unrelated content that doesn&#x27;t suit the context.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PRESTO 0 dB</span><span class="ratio">占有率 0.663</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_presto_moshi.png"><img loading="lazy" src="figures/wave_presto_moshi.png" alt="PRESTO 0 dB における Moshi の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/presto_input.mp3"></audio></label>
+        <label>CH2　Moshi の応答<audio controls preload="none" src="audio/presto_moshi.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/presto_moshi_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Yes, I do. First, make sure you eat a balanced diet that includes plenty of fruits and vegetables. Exercise with</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn asked for book recommendations, shifting the topic from physical exercise to books. The AI&#x27;s response did not address the request for book recommendations and instead continued with advice on a balanced diet and exercise, which is unrelated to the user&#x27;s change in topic.</p>
+    </div>
+  </div>
+</section>
+<section class="cond" style="--mc:#FF7F0E;--mcd:#FFAB52">
+  <header><h3><span class="dot" style="background:#FF7F0E"></span><span class="name">PersonaPlex</span></h3></header>
+  <div class="body">
+    <div class="track model">
+      <p class="label"><span class="cname">DKITCHEN 0 dB</span><span class="ratio">占有率 0.044</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_dkitchen_personaplex.png"><img loading="lazy" src="figures/wave_dkitchen_personaplex.png" alt="DKITCHEN 0 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/dkitchen_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/dkitchen_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/dkitchen_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">If you want something to sink your teeth into, try Animal Farm, the number one bestseller. It&#x27;s quick and thought-provoking, or you could go for the Night Circus, a magical story with a strong narrative. Both are great for reading on a commute or on a train.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the topic from running frequency to book recommendations. The AI appropriately pivots in response to the user&#x27;s new query by suggesting &quot;Animal Farm&quot; and &quot;The Night Circus,&quot; along with brief descriptions of each book. This makes the AI&#x27;s response perfectly aligned with the user&#x27;s new interest in finding good books to read.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">NPARK 0 dB</span><span class="ratio">占有率 0.084</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_npark_personaplex.png"><img loading="lazy" src="figures/wave_npark_personaplex.png" alt="NPARK 0 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/npark_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/npark_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/npark_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">something light you could try the alchemist it&#x27;s quick and uplifting or if you like a bit more depth check out the night circus that one&#x27;s pretty magical. For fiction a classic choice is to kill a mockingbird it&#x27;s powerful and engaging and for non-fiction sapiens gives a good overview of human evolution.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn asks for book recommendations, which is a shift in topic from their initial question. The AI&#x27;s response provides a list of book recommendations, addressing the user&#x27;s new question directly. The AI suggests books across different genres and styles, indicating a clear attempt to meet the user&#x27;s query.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">SCAFE 0 dB</span><span class="ratio">占有率 0.131</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_scafe_personaplex.png"><img loading="lazy" src="figures/wave_scafe_personaplex.png" alt="SCAFE 0 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/scafe_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/scafe_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/scafe_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Like something light, try The Alchemist, it&#x27;s pretty quick. Or for a bit more depth, go with The Night Circus. Both are good reads. If you prefer something shorter, check out The Old Man in the Sea. It&#x27;s short but powerful. Are you into non-fiction? Maybe check The Second Sex. It&#x27;s thought.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn requests a recommendation for good books to read. The AI&#x27;s response provides multiple book suggestions across different genres (light fiction, more depth fiction, and non-fiction), directly addressing the user&#x27;s request for book recommendations. This response is well-aligned with the interrupting turn, as it offers a variety of options that the user might find useful.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PSTATION 0 dB</span><span class="ratio">占有率 0.216</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_pstation_personaplex.png"><img loading="lazy" src="figures/wave_pstation_personaplex.png" alt="PSTATION 0 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pstation_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/pstation_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pstation_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Check out The Alchemist. It&#x27;s a quick read with a good story. Also, maybe tri-educated, it&#x27;s inspiring. And if you like something a bit darker, The Night Circus is a fun, magical tale. Any of those should keep you turning pages.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn asks for book recommendations, while the AI&#x27;s response appropriately provides several suggestions with brief descriptions. The AI addresses the user&#x27;s query directly, listing different genres and explaining why the books might be enjoyable. The response is well-aligned with the user&#x27;s interest in good books to read.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PRESTO 0 dB</span><span class="ratio">占有率 0.663</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_presto_personaplex.png"><img loading="lazy" src="figures/wave_presto_personaplex.png" alt="PRESTO 0 dB における PersonaPlex の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/presto_input.mp3"></audio></label>
+        <label>CH2　PersonaPlex の応答<audio controls preload="none" src="audio/presto_personaplex.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/presto_personaplex_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Plenty, try something like The Alchemist. It&#x27;s short and fun. Or if you like sci-fi, check out The Long Way to the Small Academy. And if you prefer Mystery, give the Night Circus a read.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn switches the topic to ask for book recommendations. The AI responds by providing several book suggestions covering various genres such as general fiction, sci-fi, and mystery, which directly addresses the user&#x27;s inquiry.</p>
+    </div>
+  </div>
+</section>
+<section class="cond" style="--mc:#1F77B4;--mcd:#68AFE3">
+  <header><h3><span class="dot" style="background:#1F77B4"></span><span class="name">Freeze-Omni</span></h3></header>
+  <div class="body">
+    <div class="track model">
+      <p class="label"><span class="cname">DKITCHEN 0 dB</span><span class="ratio">占有率 0.044</span><span class="score good">GPT-4o 5 点</span></p>
+      <div class="wave"><a href="figures/wave_dkitchen_freezeomni.png"><img loading="lazy" src="figures/wave_dkitchen_freezeomni.png" alt="DKITCHEN 0 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/dkitchen_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/dkitchen_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/dkitchen_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Certainly, here are a few book recommendations across different Changyuas. E. Fiction. To Kill a Mockingbird by Bai Harper Lee, a classic novel that explores themes of racial injustice and moral growth. 1980</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the topic from running frequency to book recommendations. The AI responds by providing book recommendations, which is directly related to the user&#x27;s new question about books. The response specifically begins with book recommendations, addressing the user&#x27;s interrupting query effectively.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">NPARK 0 dB</span><span class="ratio">占有率 0.084</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_npark_freezeomni.png"><img loading="lazy" src="figures/wave_npark_freezeomni.png" alt="NPARK 0 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/npark_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/npark_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/npark_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Sure. It sounds like you&#x27;re looking for some good shoes to buy. Here are a few popular options across different categories: running shoes nanenigerzing pabersens, adutas ofdrebodst. And new balance fresh fesh fesch fossa.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn asks for book recommendations, but the AI&#x27;s response mistakenly interprets this as a request for running shoe recommendations. The AI mentions some shoe brands and models, which are unrelated to the user&#x27;s question about books. The response does not address the user&#x27;s request for book suggestions at all.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">SCAFE 0 dB</span><span class="ratio">占有率 0.131</span><span class="score none">GPT-4o 採点対象外</span></p>
+      <div class="wave"><a href="figures/wave_scafe_freezeomni.png"><img loading="lazy" src="figures/wave_scafe_freezeomni.png" alt="SCAFE 0 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/scafe_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/scafe_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/scafe_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript"></p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>TO = 0 と判定されたため採点対象外。</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PSTATION 0 dB</span><span class="ratio">占有率 0.216</span><span class="score bad">GPT-4o 0 点</span></p>
+      <div class="wave"><a href="figures/wave_pstation_freezeomni.png"><img loading="lazy" src="figures/wave_pstation_freezeomni.png" alt="PSTATION 0 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/pstation_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/pstation_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/pstation_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">How often to run your dishwasher. Generally, it&#x27;s recommended to run your dishwasher when it&#x27;s full to ensure efficient use of water and energy. If you don&#x27;t have a full load daily, aim to run it at least twice a week to maintain clantain clanmufemboat up of food.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user interrupts the conversation to ask for book recommendations, but the AI responds with unrelated advice about running a dishwasher. The AI completely misses addressing the user&#x27;s question about books.</p>
+    </div>
+    <div class="track model">
+      <p class="label"><span class="cname">PRESTO 0 dB</span><span class="ratio">占有率 0.663</span><span class="score good">GPT-4o 4 点</span></p>
+      <div class="wave"><a href="figures/wave_presto_freezeomni.png"><img loading="lazy" src="figures/wave_presto_freezeomni.png" alt="PRESTO 0 dB における Freeze-Omni の波形"></a></div>
+      <div class="players">
+        <label>CH1　入力音声<audio controls preload="none" src="audio/presto_input.mp3"></audio></label>
+        <label>CH2　Freeze-Omni の応答<audio controls preload="none" src="audio/presto_freezeomni.mp3"></audio></label>
+        <label>Stereo（左 CH1 ／ 右 CH2）<audio controls preload="none" src="audio/presto_freezeomni_stereo.mp3"></audio></label>
+      </div>
+      <p class="tr-label">User Interruption 後と判定されたモデル音声の ASR 書き起こし（GPT-4o Score の判定対象）</p>
+      <p class="transcript">Absolutely, it&#x27;s great to explore a variety of gain what you enjoy most. Here are a few popular genres and some examples of notable books within each. E. Fiction, classic literature, pride and prejudice by.</p>
+      <p class="analysis"><span class="who">GPT-4o が出力した判断根拠</span>The user&#x27;s interrupting turn shifts the topic from running to asking for book recommendations. The AI attempts to respond to the new topic by discussing book genres and suggesting &quot;Pride and Prejudice&quot; under classic literature. The response is directly related to the user&#x27;s request for book suggestions, even though it contains a few grammatical errors and incomplete sentences.</p>
+    </div>
+  </div>
+</section>
+
+<h2 id="refs">参考文献・謝辞</h2>
 <ol class="refs">
   <li>X. Wang et al., Proc. ICML, 2025.</li>
   <li>A. Défossez et al., arXiv:2410.00037, 2024.</li>
@@ -474,10 +1017,8 @@ Full-Duplex 音声対話システムが雑音環境でどのように応答を�
   <li>ITU-T Rec. P.56, 2011.</li>
   <li>ITU-T Rec. G.712, 2001.</li>
 </ol>
-
-<h2>謝辞</h2>
-<p class="lead">本研究は, JST, Moonshot R&amp;D 助成金番号 JPMJPS2011 と、
-JSPS 科研費 26H02531 による支援を受け実施した。</p>
+<p class="cap">本研究は、JST ムーンショット型研究開発事業 JPMJMS2011 および
+JSPS 科研費 26H02531 の支援を受けて実施しました。</p>
 
 <footer>
   <p>中野 隼輔, 中田 亘, 齋藤 佑樹, 猿渡 洋（東京大学）／ YANS 2026　ポスター発表 S5-P12</p>
